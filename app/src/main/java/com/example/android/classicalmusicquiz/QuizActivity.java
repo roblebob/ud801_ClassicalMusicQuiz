@@ -17,12 +17,16 @@
 package com.example.android.classicalmusicquiz;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -50,8 +54,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        // TODO (2): Replace the ImageView with the SimpleExoPlayerView, and remove the method calls on the composerView.
-        SimpleExoPlayerView composerView = (SimpleExoPlayerView) findViewById(R.id.composerView);
+        // _TODO (2): Replace the ImageView with the SimpleExoPlayerView, and remove the method calls on the composerView.
+        SimpleExoPlayerView simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.composerView);
 
         boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
 
@@ -74,7 +78,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         // TODO (3): Replace the default artwork in the SimpleExoPlayerView with the question mark drawable.
         // Load the image of the composer for the answer into the ImageView.
-        composerView.setImageBitmap(Sample.getComposerArtBySampleID(this, mAnswerSampleID));
+        //omposerView.setImageBitmap(Sample.getComposerArtBySampleID(this, mAnswerSampleID));
+        Bitmap bitmap = BitmapFactory .decodeResource( getResources(),  R.drawable.question_mark);
+        simpleExoPlayerView .setDefaultArtwork( bitmap);
+
 
         // If there is only one answer left, end the game.
         if (mQuestionSampleIDs.size() < 2) {
