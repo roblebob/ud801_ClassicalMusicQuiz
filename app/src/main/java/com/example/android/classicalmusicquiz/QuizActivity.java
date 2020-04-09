@@ -32,8 +32,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 public class QuizActivity extends AppCompatActivity implements View.OnClickListener {
@@ -48,6 +53,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private int mHighScore;
     private Button[] mButtons;
 
+    SimpleExoPlayerView simpleExoPlayerView;
+    SimpleExoPlayer simpleExoPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +62,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_quiz);
 
         // _TODO (2): Replace the ImageView with the SimpleExoPlayerView, and remove the method calls on the composerView.
-        SimpleExoPlayerView simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.composerView);
+        simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.composerView);
 
         boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
 
@@ -76,9 +83,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mQuestionSampleIDs = QuizUtils.generateQuestion(mRemainingSampleIDs);
         mAnswerSampleID = QuizUtils.getCorrectAnswerID(mQuestionSampleIDs);
 
-        // TODO (3): Replace the default artwork in the SimpleExoPlayerView with the question mark drawable.
+        // _TODO (3): Replace the default artwork in the SimpleExoPlayerView with the question mark drawable.
         // Load the image of the composer for the answer into the ImageView.
-        //omposerView.setImageBitmap(Sample.getComposerArtBySampleID(this, mAnswerSampleID));
         Bitmap bitmap = BitmapFactory .decodeResource( getResources(),  R.drawable.question_mark);
         simpleExoPlayerView .setDefaultArtwork( bitmap);
 
@@ -92,16 +98,32 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize the buttons with the composers names.
         mButtons = initializeButtons(mQuestionSampleIDs);
 
-        // TODO (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
+        // _TODO (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
+        Sample sample = Sample.getSampleByID( getApplicationContext(), mAnswerSampleID);
+
         // TODO (5): Create a method called initializePlayer() that takes a Uri as an argument and call it here, passing in the Sample URI.
+        initializePlayer(sample.getUri());
 
-        }
+
+    }
+
+    void initializePlayer(String uri) {
+        // TODO (6): Instantiate a SimpleExoPlayer object using DefaultTrackSelector and DefaultLoadControl.
 
 
-    // In initializePayer
-    // TODO (6): Instantiate a SimpleExoPlayer object using DefaultTrackSelector and DefaultLoadControl.
-    // TODO (7): Prepare the MediaSource using DefaultDataSourceFactory and DefaultExtractorsFactory, as well as the Sample URI you passed in.
-    // TODO (8): Prepare the ExoPlayer with the MediaSource, start playing the sample and set the SimpleExoPlayer to the SimpleExoPlayerView.
+        DefaultTrackSelector defaultTrackSelector = new DefaultTrackSelector();
+        DefaultLoadControl defaultLoadControl = new DefaultLoadControl();
+
+        simpleExoPlayer = new SimpleExoPlayer( getApplicationContext(), defaultTrackSelector, defaultLoadControl, null, null, null);
+        simpleExoPlayerView .setPlayer(new SimpleExoPlayer(getApplicationContext(), defaultTrackSelector, defaultLoadControl));
+
+        // TODO (7): Prepare the MediaSource using DefaultDataSourceFactory and DefaultExtractorsFactory, as well as the Sample URI you passed in.
+
+
+        // TODO (8): Prepare the ExoPlayer with the MediaSource, start playing the sample and set the SimpleExoPlayer to the SimpleExoPlayerView.
+
+
+    }
 
 
     /**
