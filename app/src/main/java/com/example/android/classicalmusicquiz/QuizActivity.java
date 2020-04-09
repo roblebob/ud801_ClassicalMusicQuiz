@@ -32,6 +32,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -39,11 +40,14 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -92,8 +96,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         // _TODO (3): Replace the default artwork in the SimpleExoPlayerView with the question mark drawable.
         // Load the image of the composer for the answer into the ImageView.
-        Bitmap bitmap = BitmapFactory .decodeResource( getResources(),  R.drawable.question_mark);
-        mExoPlayerView .setDefaultArtwork( bitmap);
+        mExoPlayerView .setDefaultArtwork(  (Bitmap) BitmapFactory .decodeResource( getResources(),  R.drawable.question_mark));
 
 
         // If there is only one answer left, end the game.
@@ -106,12 +109,12 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mButtons = initializeButtons(mQuestionSampleIDs);
 
         // _TODO (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
-        Sample sample = Sample.getSampleByID( getApplicationContext(), mAnswerSampleID);
+        Sample sample = Sample.getSampleByID( this, mAnswerSampleID);
+        if (sample == null)  Toast.makeText( this, R.string.sample_list_load_error, Toast.LENGTH_SHORT) .show();
 
-        // TODO (5): Create a method called initializePlayer() that takes a Uri as an argument and call it here, passing in the Sample URI.
+
+        // _TODO (5): Create a method called initializePlayer() that takes a Uri as an argument and call it here, passing in the Sample URI.
         initializePlayer( Uri .parse( sample .getUri()));
-
-
     }
 
 
@@ -120,31 +123,28 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     void initializePlayer(Uri uri) {
         if (mExoPlayer == null) {
-
-            // TODO (6): Instantiate a SimpleExoPlayer object using DefaultTrackSelector and DefaultLoadControl.
+            // _TODO (6): Instantiate a SimpleExoPlayer object using DefaultTrackSelector and DefaultLoadControl.
             mExoPlayer = ExoPlayerFactory .newSimpleInstance(
-                    (Context) getApplicationContext(),
+                    (Context) this,
                     (TrackSelector) new DefaultTrackSelector() ,
                     (LoadControl) new DefaultLoadControl()
             );
             mExoPlayerView.setPlayer( mExoPlayer);
 
+            // _TODO (7): Prepare the MediaSource using DefaultDataSourceFactory and DefaultExtractorsFactory, as well as the Sample URI you passed in.
+            String userAgent = Util.getUserAgent(this, getString(R.string.application_name) );
+            MediaSource mediaSource = new ExtractorMediaSource(
+                    uri,
+                    new DefaultDataSourceFactory(this, userAgent),
+                    new DefaultExtractorsFactory(),
+                    null,
+                    null
+            );
 
-            // TODO (7): Prepare the MediaSource using DefaultDataSourceFactory and DefaultExtractorsFactory, as well as the Sample URI you passed in.
-
-
-
-
+            // _TODO (8): Prepare the ExoPlayer with the MediaSource, start playing the sample and set the SimpleExoPlayer to the SimpleExoPlayerView.
+            mExoPlayer.prepare( mediaSource);
+            mExoPlayer .setPlayWhenReady(true);
         }
-
-
-
-
-
-
-        // TODO (8): Prepare the ExoPlayer with the MediaSource, start playing the sample and set the SimpleExoPlayer to the SimpleExoPlayerView.
-
-
     }
 
 
@@ -215,7 +215,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // TODO (9): Stop the playback when you go to the next question.
+                // _TODO (9): Stop the playback when you go to the next question.
+                mExoPlayer.stop();
                 Intent nextQuestionIntent = new Intent(QuizActivity.this, QuizActivity.class);
                 nextQuestionIntent.putExtra(REMAINING_SONGS_KEY, mRemainingSampleIDs);
                 finish();
@@ -233,16 +234,14 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             int buttonSampleID = mQuestionSampleIDs.get(i);
 
             // TODO (10): Change the default artwork in the SimpleExoPlayerView to show the picture of the composer, when the user has answered the question.
+            mExoPlayerView .setDefaultArtwork(  Sample.getComposerArtBySampleID( this, mAnswerSampleID));
+
             mButtons[i].setEnabled(false);
             if (buttonSampleID == mAnswerSampleID) {
-                mButtons[i].getBackground().setColorFilter(ContextCompat.getColor
-                                (this, android.R.color.holo_green_light),
-                        PorterDuff.Mode.MULTIPLY);
-                mButtons[i].setTextColor(Color.WHITE);
+                mButtons[i] .getBackground() .setColorFilter( ContextCompat.getColor(this, android.R.color.holo_green_light),  PorterDuff.Mode.MULTIPLY);
+                mButtons[i] .setTextColor( Color.WHITE);
             } else {
-                mButtons[i].getBackground().setColorFilter(ContextCompat.getColor
-                                (this, android.R.color.holo_red_light),
-                        PorterDuff.Mode.MULTIPLY);
+                mButtons[i] .getBackground() .setColorFilter( ContextCompat.getColor(this, android.R.color.holo_red_light),    PorterDuff.Mode.MULTIPLY);
                 mButtons[i].setTextColor(Color.WHITE);
 
             }
@@ -250,4 +249,16 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // TODO (11): Override onDestroy() to stop and release the player when the Activity is destroyed.
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+    }
+
+    private void releasePlayer() {
+        mExoPlayer .stop();
+        mExoPlayer .release();
+        mExoPlayer = null;
+    }
 }
