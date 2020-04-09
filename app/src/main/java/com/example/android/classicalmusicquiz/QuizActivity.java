@@ -21,11 +21,14 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import java.util.ArrayList;
 
@@ -48,7 +51,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_quiz);
 
         // TODO (2): Replace the ImageView with the SimpleExoPlayerView, and remove the method calls on the composerView.
-        ImageView composerView = (ImageView) findViewById(R.id.composerView);
+        SimpleExoPlayerView composerView = (SimpleExoPlayerView) findViewById(R.id.composerView);
 
         boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
 

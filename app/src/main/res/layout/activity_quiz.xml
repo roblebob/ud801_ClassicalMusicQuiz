@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.-->
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,7 +21,7 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontalHalf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,8 +67,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonB" />
 
-    <!--TODO (1): Replace the Composer ImageView with a SimpleExoPlayerView that occupies the top half of your screen.-->
-    <ImageView
+    <!--_TODO (1): Replace the Composer ImageView with a SimpleExoPlayerView that occupies the top half of your screen.-->
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/composerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -83,4 +83,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/question_mark" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
