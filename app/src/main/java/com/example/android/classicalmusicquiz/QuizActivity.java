@@ -51,7 +51,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        ImageView composerView = (ImageView) findViewById(R.id.composerView);
+        ImageView composerView = /*(ImageView)*/ findViewById(R.id.composerView);
 
         boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
 
@@ -96,7 +96,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private Button[] initializeButtons(ArrayList<Integer> answerSampleIDs) {
         Button[] buttons = new Button[mButtonIDs.length];
         for (int i = 0; i < answerSampleIDs.size(); i++) {
-            Button currentButton = (Button) findViewById(mButtonIDs[i]);
+            Button currentButton = /*(Button)*/ findViewById(mButtonIDs[i]);
             Sample currentSample = Sample.getSampleByID(this, answerSampleIDs.get(i));
             buttons[i] = currentButton;
             currentButton.setOnClickListener(this);
@@ -150,14 +150,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         // Wait some time so the user can see the correct answer, then go to the next question.
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent nextQuestionIntent = new Intent(QuizActivity.this, QuizActivity.class);
-                nextQuestionIntent.putExtra(REMAINING_SONGS_KEY, mRemainingSampleIDs);
-                finish();
-                startActivity(nextQuestionIntent);
-            }
+        handler.postDelayed(() -> {
+            Intent nextQuestionIntent = new Intent(QuizActivity.this, QuizActivity.class);
+            nextQuestionIntent.putExtra(REMAINING_SONGS_KEY, mRemainingSampleIDs);
+            finish();
+            startActivity(nextQuestionIntent);
         }, CORRECT_ANSWER_DELAY_MILLIS);
 
     }
