@@ -21,6 +21,10 @@ In which method should you update the state of the __MediaSession__ ?
 
 [&emsp;] &nbsp; `MySessionCallbacks`
 
-[&emsp;] &nbsp; `onPlayerStateChanged()`
+[ x ] &nbsp; `onPlayerStateChanged()`
 
 [&emsp;] &nbsp; `onCreate()`
+
+
+__`onPlayerStateChanged()`__, this is an _ExoPlayer_.
+__`EventListener`__ and will be called every time the player state changes, so this is where we update the __Media Session__.
