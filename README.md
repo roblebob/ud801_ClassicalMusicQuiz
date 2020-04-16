@@ -17,7 +17,10 @@ In this exercise, you'll monitor the state changes of the _ExoPlayer_ using an `
 
 In which method should you update the state of the __MediaSession__ ?
 
-[ ] `onPlay()`
-[ ] `MySessionCallbacks`
-[ ] `onPlayerStateChanged()`
-[ ] `onCreate()`
+[\\] `onPlay()`
+
+[\\] `MySessionCallbacks`
+
+[\\] `onPlayerStateChanged()`
+
+[\\] `onCreate()`
