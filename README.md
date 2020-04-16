@@ -2,13 +2,13 @@
 
 ## Customizing ExoPlayer UI
 
-We chose to use SimpleExoPlayerView because of its simplicity. 
-It can be hooked up to ExoPlayer with a single line of code and greatly simplifies the UI portion of a media application since we don't have to code anything ourselves. 
+We chose to use __SimpleExoPlayerView__ because of its simplicity. 
+It can be hooked up to ___ExoPlayer___ with a single line of code and greatly simplifies the UI portion of a media application since we don't have to code anything ourselves. 
 However, such simplicity usually comes at the cost of customization: 
 you might think that we are stuck with the provided UI since it comes ready out of the box. 
-Not so with ExoPlayer! 
+Not so with ___ExoPlayer___! 
 
-ExoPlayer comes with two notable out of the box UI elements:
+___ExoPlayer___ comes with two notable out of the box UI elements:
 
 - __PlaybackControlView__ is a view for controlling ExoPlayer instances. 
     It displays standard playback controls including a play/pause button, fast-forward and rewind buttons, and a seek bar.
@@ -16,7 +16,7 @@ ExoPlayer comes with two notable out of the box UI elements:
 - __SimpleExoPlayerView__ is a high level view for SimpleExoPlayer media playbacks. 
     It displays video (or album art in our case) and displays playback controls using a PlaybackControlView.
 
-These ExoPlayer UI components were created with customization in mind, in the following ways:
+These ___ExoPlayer___ UI components were created with customization in mind, in the following ways:
 
 
 
@@ -41,14 +41,14 @@ which also uses its own layout file:
 
 //
 
-If you include any layout files with the same names, ExoPlayer will use them instead of these default ones. 
+If you include any layout files with the same names, ___ExoPlayer___ will use them instead of these default ones. 
 This allows you to fully customize what the UI looks like.
 
 //
 
 _One caveat:_ 
 Use of standard ids (such as exo_play) is required so that child views can be identified, bound to the player and updated in an appropriate way. 
-A full list of the standard ids for each view can be found in the Javadoc for 
+A full list of the standard ids for each view can be found in the ___Javadoc___ for 
 [ __PlaybackControlView__ ](http://google.github.io/ExoPlayer/doc/reference/index.html?com/google/android/exoplayer2/ui/PlaybackControlView.html)
 and 
 [ __SimpleExoPlayerView__ ](http://google.github.io/ExoPlayer/doc/reference/index.html?com/google/android/exoplayer2/ui/SimpleExoPlayerView.html)
@@ -58,7 +58,7 @@ Use of each standard id is optional, which is why we’ll be able to omit some o
 
 ## Custom Layout Files
 
-The issue with the above method is that it customizes the UI for every instance of SimpleExoPlayerView (and/or PlaybackControlView). 
+The issue with the above method is that it customizes the UI for every instance of __SimpleExoPlayerView__ (and/or __PlaybackControlView__). 
 For our use case, this doesn't matter since we only have one player view. 
 However, if you need to customize individual instances, you can use a combination of the two above methods: use 
  the `player_layout_id` attribute for a custom __SimpleExoPlayerView__, or 
