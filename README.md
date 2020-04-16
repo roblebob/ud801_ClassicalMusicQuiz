@@ -26,5 +26,5 @@ In which method should you update the state of the __MediaSession__ ?
 [&emsp;] &nbsp; `onCreate()`
 
 
-__`onPlayerStateChanged()`__, this is an _ExoPlayer_.
-__`EventListener`__ and will be called every time the player state changes, so this is where we update the __Media Session__.
+__`onPlayerStateChanged()`__, this is an __`ExoPlayer.EventListener`__ and will be called every time the player state changes, 
+ so this is where we update the __Media Session__.
