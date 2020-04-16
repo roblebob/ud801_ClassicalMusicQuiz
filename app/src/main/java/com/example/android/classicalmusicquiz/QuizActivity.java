@@ -72,8 +72,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        // _TODO (2): Replace the ImageView with the SimpleExoPlayerView, and remove the method calls on the composerView.
+
+        // [✓] TODO (2): Replace the ImageView with the SimpleExoPlayerView, and remove the method calls on the composerView.
         mExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.composerView);
+
 
         boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
 
@@ -94,8 +96,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mQuestionSampleIDs = QuizUtils.generateQuestion(mRemainingSampleIDs);
         mAnswerSampleID = QuizUtils.getCorrectAnswerID(mQuestionSampleIDs);
 
-        // _TODO (3): Replace the default artwork in the SimpleExoPlayerView with the question mark drawable.
-        // Load the image of the composer for the answer into the ImageView.
+        // [✓] TODO (3): Replace the default artwork in the SimpleExoPlayerView with the question mark drawable. Load the image of the composer for the answer into the ImageView.
         mExoPlayerView .setDefaultArtwork(  (Bitmap) BitmapFactory .decodeResource( getResources(),  R.drawable.question_mark));
 
 
@@ -108,13 +109,13 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize the buttons with the composers names.
         mButtons = initializeButtons(mQuestionSampleIDs);
 
-        // _TODO (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
+        // [✓] TODO (4): Create a Sample object using the Sample.getSampleByID() method and passing in mAnswerSampleID;
         Sample sample = Sample.getSampleByID( this, mAnswerSampleID);
         if (sample == null)  Toast.makeText( this, R.string.sample_list_load_error, Toast.LENGTH_SHORT) .show();
 
 
-        // _TODO (5): Create a method called initializePlayer() that takes a Uri as an argument and call it here, passing in the Sample URI.
-        initializePlayer( Uri .parse( sample .getUri()));
+        // [✓] TODO (5): Create a method called initializePlayer() that takes a Uri as an argument and call it here, passing in the Sample URI.
+        initializePlayer( Uri .parse( sample.getUri()));
     }
 
 
@@ -123,7 +124,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     void initializePlayer(Uri uri) {
         if (mExoPlayer == null) {
-            // _TODO (6): Instantiate a SimpleExoPlayer object using DefaultTrackSelector and DefaultLoadControl.
+            // [✓] TODO (6): Instantiate a SimpleExoPlayer object using DefaultTrackSelector and DefaultLoadControl.
             mExoPlayer = ExoPlayerFactory .newSimpleInstance(
                     (Context) this,
                     (TrackSelector) new DefaultTrackSelector() ,
@@ -131,7 +132,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             );
             mExoPlayerView.setPlayer( mExoPlayer);
 
-            // _TODO (7): Prepare the MediaSource using DefaultDataSourceFactory and DefaultExtractorsFactory, as well as the Sample URI you passed in.
+            // [✓] TODO (7): Prepare the MediaSource using DefaultDataSourceFactory and DefaultExtractorsFactory, as well as the Sample URI you passed in.
             String userAgent = Util.getUserAgent(this, getString(R.string.application_name) );
             MediaSource mediaSource = new ExtractorMediaSource(
                     uri,
@@ -141,7 +142,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                     null
             );
 
-            // _TODO (8): Prepare the ExoPlayer with the MediaSource, start playing the sample and set the SimpleExoPlayer to the SimpleExoPlayerView.
+            // [✓] TODO (8): Prepare the ExoPlayer with the MediaSource, start playing the sample and set the SimpleExoPlayer to the SimpleExoPlayerView.
             mExoPlayer.prepare( mediaSource);
             mExoPlayer .setPlayWhenReady(true);
         }
@@ -215,12 +216,12 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                // _TODO (9): Stop the playback when you go to the next question.
+                // [✓] TODO (9): Stop the playback when you go to the next question.
                 mExoPlayer.stop();
                 Intent nextQuestionIntent = new Intent(QuizActivity.this, QuizActivity.class);
-                nextQuestionIntent.putExtra(REMAINING_SONGS_KEY, mRemainingSampleIDs);
+                nextQuestionIntent .putExtra( REMAINING_SONGS_KEY, mRemainingSampleIDs);
                 finish();
-                startActivity(nextQuestionIntent);
+                startActivity( nextQuestionIntent);
             }
         }, CORRECT_ANSWER_DELAY_MILLIS);
 
@@ -233,8 +234,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         for (int i = 0; i < mQuestionSampleIDs.size(); i++) {
             int buttonSampleID = mQuestionSampleIDs.get(i);
 
-            // TODO (10): Change the default artwork in the SimpleExoPlayerView to show the picture of the composer, when the user has answered the question.
+            // [✓] TODO (10): Change the default artwork in the SimpleExoPlayerView to show the picture of the composer, when the user has answered the question.
             mExoPlayerView .setDefaultArtwork(  Sample.getComposerArtBySampleID( this, mAnswerSampleID));
+
 
             mButtons[i].setEnabled(false);
             if (buttonSampleID == mAnswerSampleID) {
@@ -248,14 +250,11 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    // TODO (11): Override onDestroy() to stop and release the player when the Activity is destroyed.
-
-    @Override
-    protected void onDestroy() {
+    // [✓] TODO (11): Override onDestroy() to stop and release the player when the Activity is destroyed.
+    @Override protected void onDestroy() {
         super.onDestroy();
         releasePlayer();
     }
-
     private void releasePlayer() {
         mExoPlayer .stop();
         mExoPlayer .release();
