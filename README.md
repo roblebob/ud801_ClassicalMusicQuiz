@@ -31,12 +31,12 @@ Take a look at the documentation for the UI element to see the list of possible 
 
 When these views are inflated, they use specific layout files to determine what the UI looks like. 
 For __SimpleExoPlayerView__, this file is called: 
-[exo_simple_player_view.xml](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_simple_player_view.xml)
+[`exo_simple_player_view.xml`](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_simple_player_view.xml)
 . 
 This layout file includes a __PlayBackControlView__ 
 (once it's inflated, it replaces the exo_controller_placeholder item) 
 which also uses its own layout file: 
-[exo_playback_control_view.xml](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_playback_control_view.xml)
+[`exo_playback_control_view.xml`](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_playback_control_view.xml)
 .
 
 //
