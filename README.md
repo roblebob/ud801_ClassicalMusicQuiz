@@ -3,20 +3,20 @@
 ## Customizing ExoPlayer UI
 
 We chose to use __SimpleExoPlayerView__ because of its simplicity. 
-It can be hooked up to ___ExoPlayer___ with a single line of code and greatly simplifies the UI portion of a media application since we don't have to code anything ourselves. 
+It can be hooked up to _ExoPlayer_ with a single line of code and greatly simplifies the UI portion of a media application since we don't have to code anything ourselves. 
 However, such simplicity usually comes at the cost of customization: 
 you might think that we are stuck with the provided UI since it comes ready out of the box. 
-Not so with ___ExoPlayer___! 
+Not so with _ExoPlayer_! 
 
-___ExoPlayer___ comes with two notable out of the box UI elements:
+_ExoPlayer_ comes with two notable out of the box UI elements:
 
-- __PlaybackControlView__ is a view for controlling ExoPlayer instances. 
+- __PlaybackControlView__ is a view for controlling _ExoPlayer_ instances. 
     It displays standard playback controls including a play/pause button, fast-forward and rewind buttons, and a seek bar.
 
-- __SimpleExoPlayerView__ is a high level view for SimpleExoPlayer media playbacks. 
-    It displays video (or album art in our case) and displays playback controls using a PlaybackControlView.
+- __SimpleExoPlayerView__ is a high level view for _SimpleExoPlayer_ media playbacks. 
+    It displays video (or album art in our case) and displays playback controls using a __PlaybackControlView__.
 
-These ___ExoPlayer___ UI components were created with customization in mind, in the following ways:
+These _ExoPlayer_ UI components were created with customization in mind, in the following ways:
 
 
 
@@ -41,7 +41,7 @@ which also uses its own layout file:
 
 //
 
-If you include any layout files with the same names, ___ExoPlayer___ will use them instead of these default ones. 
+If you include any layout files with the same names, _ExoPlayer_ will use them instead of these default ones. 
 This allows you to fully customize what the UI looks like.
 
 //
