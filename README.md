@@ -34,17 +34,17 @@ For __SimpleExoPlayerView__, this file is called:
 [`exo_simple_player_view.xml`](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_simple_player_view.xml)
 . 
 This layout file includes a __PlayBackControlView__ 
-(once it's inflated, it replaces the exo_controller_placeholder item) 
+(once it's inflated, it replaces the `exo_controller_placeholder` item) 
 which also uses its own layout file: 
 [`exo_playback_control_view.xml`](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_playback_control_view.xml)
 .
 
-//
+  
 
 If you include any layout files with the same names, _ExoPlayer_ will use them instead of these default ones. 
 This allows you to fully customize what the UI looks like.
 
-//
+  
 
 _One caveat:_ 
 Use of standard ids (such as exo_play) is required so that child views can be identified, bound to the player and updated in an appropriate way. 
@@ -64,12 +64,12 @@ However, if you need to customize individual instances, you can use a combinatio
  the `player_layout_id` attribute for a custom __SimpleExoPlayerView__, or 
  the `controller_layout_id` for a custom __PlaybackControlView__ and specify a custom layout file to override the layout for that specific instance.
 
-//
+  
 
 We don't need individual instance customization, so 
 override the `exo_playback_control_view.xml` layout file for the playback control view (included in our `SimpleExoPlayerView`) and 
 remove the skip to next, fastforward and rewind buttons (you can copy the default layout [here](https://github.com/google/ExoPlayer/blob/release-v2/library/ui/src/main/res/layout/exo_playback_control_view.xml)).
 
-//
+  
 
 After completing this, run the app and notice the change in the UI!
