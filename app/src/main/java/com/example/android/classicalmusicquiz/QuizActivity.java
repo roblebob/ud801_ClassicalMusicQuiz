@@ -277,7 +277,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override public void onLoadingChanged( boolean isLoading) { }
 
-    // TODO (3): Add conditional logging statements to the onPlayerStateChanged() method that log when ExoPlayer is playing or paused.
+    // [✓] TODO (3): Add conditional logging statements to the onPlayerStateChanged() method that log when ExoPlayer is playing or paused.
     @Override public void onPlayerStateChanged( boolean playWhenReady, int playbackState) {
         if( (playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
             Log.d(TAG, "onPlayerStateChanged() : PLAYING");
