@@ -153,7 +153,7 @@ public class QuizActivity extends AppCompatActivity
             mExoPlayer = ExoPlayerFactory .newSimpleInstance(this, trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
 
-            // TODO (2): Set the ExoPlayer.EventListener to this activity
+            // [✓] TODO (2): Set the ExoPlayer.EventListener to this activity
             mExoPlayer.addListener(this);
 
             // Prepare the MediaSource.
