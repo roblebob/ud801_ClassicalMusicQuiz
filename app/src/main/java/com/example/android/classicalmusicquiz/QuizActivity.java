@@ -26,6 +26,8 @@ import android.os.Handler;
 
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -51,9 +53,9 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 
 // [✓] TODO (1): Have this Activity implement ExoPlayer.EventListener and add the required methods.
-public class QuizActivity extends AppCompatActivity
-        implements View.OnClickListener, ExoPlayer.EventListener {
+public class QuizActivity extends AppCompatActivity implements View.OnClickListener, ExoPlayer.EventListener {
 
+    private static final String TAG = QuizActivity.class.getSimpleName();
     private static final int CORRECT_ANSWER_DELAY_MILLIS = 1000;
     private static final String REMAINING_SONGS_KEY = "remaining_songs";
     private int[] mButtonIDs = {R.id.buttonA, R.id.buttonB, R.id.buttonC, R.id.buttonD};
@@ -276,7 +278,14 @@ public class QuizActivity extends AppCompatActivity
     @Override public void onLoadingChanged( boolean isLoading) { }
 
     // TODO (3): Add conditional logging statements to the onPlayerStateChanged() method that log when ExoPlayer is playing or paused.
-    @Override public void onPlayerStateChanged( boolean playWhenReady, int playbackState) { }
+    @Override public void onPlayerStateChanged( boolean playWhenReady, int playbackState) {
+        if( (playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
+            Log.d(TAG, "onPlayerStateChanged() : PLAYING");
+        } else if( playbackState == ExoPlayer.STATE_READY) {
+            Log.d(TAG, "onPlayerStateChanged() : PAUSED");
+        }
+
+    }
 
     @Override public void onPlayerError( ExoPlaybackException error) { }
 
