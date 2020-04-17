@@ -23,8 +23,9 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -76,7 +77,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mPlayerView = (SimpleExoPlayerView) findViewById(R.id.playerView);
 
 
-        boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
+        boolean isNewGame = !getIntent().hasExtra( REMAINING_SONGS_KEY);
 
         // If it's a new game, set the current score to 0 and load all samples.
         if (isNewGame) {
@@ -84,16 +85,16 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             mRemainingSampleIDs = Sample.getAllSampleIDs(this);
             // Otherwise, get the remaining songs from the Intent.
         } else {
-            mRemainingSampleIDs = getIntent().getIntegerArrayListExtra(REMAINING_SONGS_KEY);
+            mRemainingSampleIDs = getIntent() .getIntegerArrayListExtra( REMAINING_SONGS_KEY);
         }
 
         // Get current and high scores.
-        mCurrentScore = QuizUtils.getCurrentScore(this);
-        mHighScore = QuizUtils.getHighScore(this);
+        mCurrentScore = QuizUtils .getCurrentScore(this);
+        mHighScore = QuizUtils .getHighScore(this);
 
         // Generate a question and get the correct answer.
-        mQuestionSampleIDs = QuizUtils.generateQuestion(mRemainingSampleIDs);
-        mAnswerSampleID = QuizUtils.getCorrectAnswerID(mQuestionSampleIDs);
+        mQuestionSampleIDs = QuizUtils .generateQuestion( mRemainingSampleIDs);
+        mAnswerSampleID = QuizUtils .getCorrectAnswerID( mQuestionSampleIDs);
 
         // Load the question mark as the background image until the user answers the question.
         mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
