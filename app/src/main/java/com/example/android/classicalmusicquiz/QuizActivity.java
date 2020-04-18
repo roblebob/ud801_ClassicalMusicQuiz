@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -122,6 +124,15 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize the player.
         initializePlayer(Uri.parse(answerSample.getUri()));
     }
+
+
+    public void initializeMediaSession() {
+
+        MediaSessionCompat mediaSessionCompat = null;
+
+
+    }
+
 
 
     /**
