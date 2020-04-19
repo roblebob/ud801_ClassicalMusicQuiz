@@ -67,6 +67,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
 
+    MediaSessionCompat mMediaSession;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize the buttons with the composers names.
         mButtons = initializeButtons(mQuestionSampleIDs);
 
-        // TODO (1): Create a method to initialize the MediaSession. It should create the MediaSessionCompat object, set the flags for external clients, set the available actions you want to support, and start the session.
+        // TODO (1f): call the method you just created
+
+
         // TODO (2): Create an inner class that extends MediaSessionCompat.Callbacks, and override the onPlay(), onPause(), and onSkipToPrevious() callbacks. Pass an instance of this class into the MediaSession.setCallback() method in the method you created in TODO 1.
         
         Sample answerSample = Sample.getSampleByID(this, mAnswerSampleID);
@@ -125,11 +130,28 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         initializePlayer(Uri.parse(answerSample.getUri()));
     }
 
-
+    // TODO (1a): Create a method to initialize the MediaSession.
     public void initializeMediaSession() {
 
-        MediaSessionCompat mediaSessionCompat = null;
+        // TODO (1b): It should create the MediaSessionCompat object, ...
+        mMediaSession = new MediaSessionCompat(this, TAG);
 
+        // TODO (1c): ... set the flags for external clients,
+        mMediaSession .setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        // TODO (1d):  set an optional Media Button Receiver component;
+        //  set to null since we don't want a Media Button to start the app when it is stopped
+        //  (for more information: https://developer.android.com/guide/topics/media-apps/working-with-a-media-session.html)
+        mMediaSession .setMediaButtonReceiver( null);
+
+
+        // TODO (1e): ... set the available actions you want to support
+        mStateBuilder
+
+
+        // TODO (1e): ...  and start the session.
 
     }
 
