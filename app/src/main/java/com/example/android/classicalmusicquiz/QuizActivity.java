@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -68,14 +69,13 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private SimpleExoPlayerView mPlayerView;
 
     MediaSessionCompat mMediaSession;
-
+    PlaybackStateCompat.Builder mStateBuilder;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-
 
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) findViewById(R.id.playerView);
@@ -113,11 +113,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize the buttons with the composers names.
         mButtons = initializeButtons(mQuestionSampleIDs);
 
-        // TODO (1f): call the method you just created
+        // TODO (1h): call the method you just created
+        initializeMediaSession();
 
-
-        // TODO (2): Create an inner class that extends MediaSessionCompat.Callbacks, and override the onPlay(), onPause(), and onSkipToPrevious() callbacks. Pass an instance of this class into the MediaSession.setCallback() method in the method you created in TODO 1.
-        
         Sample answerSample = Sample.getSampleByID(this, mAnswerSampleID);
 
         if (answerSample == null) {
@@ -148,12 +146,34 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
 
         // TODO (1e): ... set the available actions you want to support
-        mStateBuilder
+        mStateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY |
+                                PlaybackStateCompat.ACTION_PAUSE |
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
+
+        mMediaSession .setPlaybackState( mStateBuilder .build());
+
+        // TODO (1f, (2)): set the callbacks
+        mMediaSession .setCallback( new MySessionCallbacks());
 
 
-        // TODO (1e): ...  and start the session.
-
+        // TODO (1g): ...  and start the session.
+        mMediaSession .setActive( true);
     }
+
+
+    // TODO (2): Create an inner class that extends MediaSessionCompat.Callbacks, and override the onPlay(), onPause(), and onSkipToPrevious() callbacks. Pass an instance of this class into the MediaSession.setCallback() method in the method you created in TODO 1.
+    private class MySessionCallbacks extends MediaSessionCompat.Callback {
+        @Override public void onPlay() {}
+        @Override public void onPause() {}
+        @Override public void onSkipToPrevious() {}
+    }
+
+
+
+
 
 
 
@@ -299,7 +319,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     protected void onDestroy() {
-        // TODO (4): When the activity is destroyed, set the MediaSession to inactive.
+        // [✓] TODO (4): When the activity is destroyed, set the MediaSession to inactive.
+        mMediaSession .setActive( false);
         super.onDestroy();
         releasePlayer();
     }
@@ -323,9 +344,12 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
             // TODO (3): When ExoPlayer is playing, update the PlayBackState.
+            mStateBuilder.setState( PlaybackStateCompat.STATE_PLAYING, mExoPlayer .getCurrentPosition(), 1f);
+            mMediaSession .setPlaybackState( mStateBuilder .build());
             Log.d(TAG, "onPlayerStateChanged: PLAYING");
         } else if((playbackState == ExoPlayer.STATE_READY)){
             // TODO (3): When ExoPlayer is paused, update the PlayBackState.
+
             Log.d(TAG, "onPlayerStateChanged: PAUSED");
         }
     }
