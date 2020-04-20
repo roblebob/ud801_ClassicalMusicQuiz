@@ -23,6 +23,8 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -184,7 +186,23 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    // TODO (1): Create a method that shows a MediaStyle notification with two actions (play/pause, skip to previous). Clicking on the notification should launch this activity. It should take one argument that defines the state of MediaSession.
+    // TODO (1):
+    //  Create a method that shows a MediaStyle notification with two actions (play/pause, skip to previous).
+    //  Clicking on the notification should launch this activity.
+    //  It should take one argument that defines the state of MediaSession.
+    private void showNotification( PlaybackStateCompat state) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder( this);
+
+        int icon;
+        String play_pause;
+        if( state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+            icon = R.drawable.exo_controls_pause;
+            play_pause = getString(R.string.)
+        }
+    }
+
+
+
 
     /**
      * Initialize ExoPlayer.
