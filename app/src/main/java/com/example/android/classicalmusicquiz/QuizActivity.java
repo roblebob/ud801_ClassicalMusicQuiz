@@ -16,6 +16,7 @@
 
 package com.example.android.classicalmusicquiz;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -72,6 +73,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private SimpleExoPlayerView mPlayerView;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+    private NotificationManager mNotificationManager;
 
 
     @Override
@@ -233,7 +235,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         .setMediaSession( mMediaSession.getSessionToken())
                         .setShowActionsInCompactView(0,1));
 
-
+        mNotificationManager = (NotificationManager) getSystemService( NOTIFICATION_SERVICE);
+        mNotificationManager .notify( 0, builder.build());
     }
 
 
@@ -268,6 +271,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
      * Release ExoPlayer.
      */
     private void releasePlayer() {
+        // TODO (3): call cancelAll() of the NotificationManager
+        mNotificationManager .cancelAll();
+
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
@@ -398,6 +404,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mMediaSession.setPlaybackState(mStateBuilder.build());
         
         // TODO (2): Call the method to show the notification, passing in the PlayBackStateCompat object.
+        showNotification( mStateBuilder.build());
     }
 
     @Override
