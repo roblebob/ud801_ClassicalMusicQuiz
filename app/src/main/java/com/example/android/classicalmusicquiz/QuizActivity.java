@@ -16,6 +16,7 @@
 
 package com.example.android.classicalmusicquiz;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -29,6 +30,8 @@ import androidx.core.content.ContextCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.media.session.MediaButtonReceiver;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -197,8 +200,32 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         String play_pause;
         if( state.getState() == PlaybackStateCompat.STATE_PLAYING) {
             icon = R.drawable.exo_controls_pause;
-            play_pause = getString(R.string.)
+            play_pause = getString( R.string.pause);
+        } else {
+            icon = R.drawable.exo_controls_play;
+            play_pause = getString( R.string.play);
         }
+
+        NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
+                icon,
+                play_pause,
+                MediaButtonReceiver.buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_PLAY_PAUSE));
+
+        NotificationCompat.Action restartAction = new NotificationCompat.Action(
+                R.drawable.exo_controls_previous,
+                getString(R.string.restart),
+                MediaButtonReceiver.buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+
+        PendingIntent contentPendingIntend = PendingIntent .getActivity(
+                this,
+                0,
+                new Intent( this, QuizActivity.class),
+                0);
+
+        builder .setContentTitle( getString( R.string.guess))
+                .setContentText(  getString( R.string.notification_text))
+                .setContentIntent( contentPendingIntend)
+                .setSmallIcon(R.drawable.ic_music_note)
     }
 
 
