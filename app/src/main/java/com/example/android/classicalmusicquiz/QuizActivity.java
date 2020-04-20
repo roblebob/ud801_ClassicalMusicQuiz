@@ -209,12 +209,12 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
                 icon,
                 play_pause,
-                MediaButtonReceiver.buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_PLAY_PAUSE));
+                MediaButtonReceiver .buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_PLAY_PAUSE));
 
         NotificationCompat.Action restartAction = new NotificationCompat.Action(
                 R.drawable.exo_controls_previous,
                 getString(R.string.restart),
-                MediaButtonReceiver.buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+                MediaButtonReceiver .buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
 
         PendingIntent contentPendingIntend = PendingIntent .getActivity(
                 this,
@@ -226,6 +226,14 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 .setContentText(  getString( R.string.notification_text))
                 .setContentIntent( contentPendingIntend)
                 .setSmallIcon(R.drawable.ic_music_note)
+                .setVisibility( NotificationCompat.VISIBILITY_PUBLIC)
+                .addAction( restartAction)
+                .addAction( playPauseAction)
+                .setStyle( new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setMediaSession( mMediaSession.getSessionToken())
+                        .setShowActionsInCompactView(0,1));
+
+
     }
 
 
