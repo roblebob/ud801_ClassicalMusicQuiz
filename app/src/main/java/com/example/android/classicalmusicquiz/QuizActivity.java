@@ -113,7 +113,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // Initialize the buttons with the composers names.
         mButtons = initializeButtons(mQuestionSampleIDs);
 
-        // TODO (1h): call the method you just created
+        // [✓] TODO (1h): call the method you just created
         initializeMediaSession();
 
         Sample answerSample = Sample.getSampleByID(this, mAnswerSampleID);
@@ -128,24 +128,24 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         initializePlayer(Uri.parse(answerSample.getUri()));
     }
 
-    // TODO (1a): Create a method to initialize the MediaSession.
+    // [✓] TODO (1a): Create a method to initialize the MediaSession.
     public void initializeMediaSession() {
 
-        // TODO (1b): It should create the MediaSessionCompat object, ...
+        // [✓] TODO (1b): It should create the MediaSessionCompat object, ...
         mMediaSession = new MediaSessionCompat(this, TAG);
 
-        // TODO (1c): ... set the flags for external clients,
+        // [✓] TODO (1c): ... set the flags for external clients,
         mMediaSession .setFlags(
                 MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                         MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-        // TODO (1d):  set an optional Media Button Receiver component;
-        //  set to null since we don't want a Media Button to start the app when it is stopped
-        //  (for more information: https://developer.android.com/guide/topics/media-apps/working-with-a-media-session.html)
+        // [✓] TODO (1d):  set an optional Media Button Receiver component;
+        //      set to null since we don't want a Media Button to start the app when it is stopped
+        //      (for more information: https://developer.android.com/guide/topics/media-apps/working-with-a-media-session.html)
         mMediaSession .setMediaButtonReceiver( null);
 
 
-        // TODO (1e): ... set the available actions you want to support
+        // [✓] TODO (1e): ... set the available actions you want to support
         mStateBuilder = new PlaybackStateCompat.Builder()
                 .setActions(
                         PlaybackStateCompat.ACTION_PLAY |
@@ -155,16 +155,18 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         mMediaSession .setPlaybackState( mStateBuilder .build());
 
-        // TODO (1f, (2)): set the callbacks
+        // [✓] TODO (1f, (2)): set the callbacks
         mMediaSession .setCallback( new MySessionCallbacks());
 
 
-        // TODO (1g): ...  and start the session.
+        // [✓] TODO (1g): ...  and start the session.
         mMediaSession .setActive( true);
     }
 
 
-    // TODO (2): Create an inner class that extends MediaSessionCompat.Callbacks, and override the onPlay(), onPause(), and onSkipToPrevious() callbacks. Pass an instance of this class into the MediaSession.setCallback() method in the method you created in TODO 1.
+    // [✓] TODO (2): Create an inner class that extends MediaSessionCompat.Callbacks, and override the onPlay(), onPause(), and onSkipToPrevious() callbacks.
+    //      Pass an instance of this class into the MediaSession.setCallback() method in the method you created in TODO_1.
+    //      These are called by external clients (headphones, car...) provided that they use a mediaController to control the Session.
     private class MySessionCallbacks extends MediaSessionCompat.Callback {
         @Override public void onPlay() {}
         @Override public void onPause() {}
@@ -317,8 +319,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Release the player when the activity is destroyed.
      */
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         // [✓] TODO (4): When the activity is destroyed, set the MediaSession to inactive.
         mMediaSession .setActive( false);
         super.onDestroy();
@@ -327,38 +328,21 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     
     // ExoPlayer Event Listeners
-
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+    @Override public void onTimelineChanged( Timeline timeline, Object manifest) { }
+    @Override public void onTracksChanged( TrackGroupArray trackGroups, TrackSelectionArray trackSelections) { }
+    @Override public void onLoadingChanged( boolean isLoading) { }
+    @Override public void onPlayerStateChanged( boolean playWhenReady, int playbackState) {
         if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
-            // TODO (3): When ExoPlayer is playing, update the PlayBackState.
-            mStateBuilder.setState( PlaybackStateCompat.STATE_PLAYING, mExoPlayer .getCurrentPosition(), 1f);
-            mMediaSession .setPlaybackState( mStateBuilder .build());
+            // [✓] TODO (3): When ExoPlayer is playing, update the PlayBackState.
+            mStateBuilder .setState(  PlaybackStateCompat.STATE_PLAYING,  mExoPlayer.getCurrentPosition(), 1f);
             Log.d(TAG, "onPlayerStateChanged: PLAYING");
         } else if((playbackState == ExoPlayer.STATE_READY)){
-            // TODO (3): When ExoPlayer is paused, update the PlayBackState.
-
+            // [✓] TODO (3): When ExoPlayer is paused, update the PlayBackState.
+            mStateBuilder .setState(  PlaybackStateCompat.STATE_PAUSED,  mExoPlayer.getCurrentPosition(), 1f);
             Log.d(TAG, "onPlayerStateChanged: PAUSED");
         }
+        mMediaSession .setPlaybackState( mStateBuilder .build());
     }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-    }
-
-    @Override
-    public void onPositionDiscontinuity() {
-    }
+    @Override public void onPlayerError(ExoPlaybackException error) { }
+    @Override public void onPositionDiscontinuity() { }
 }
