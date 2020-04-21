@@ -16,13 +16,16 @@
 
 package com.example.android.classicalmusicquiz;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -62,9 +65,10 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private static final int CORRECT_ANSWER_DELAY_MILLIS = 1000;
     private static final String REMAINING_SONGS_KEY = "remaining_songs";
     private static final String TAG = QuizActivity.class.getSimpleName();
-    private int[] mButtonIDs = {R.id.buttonA, R.id.buttonB, R.id.buttonC, R.id.buttonD};
-    private ArrayList<Integer> mRemainingSampleIDs;
-    private ArrayList<Integer> mQuestionSampleIDs;
+    private static final String CHANNEL_ID = "channel_id";
+    private int[] mButtonIDs = { R.id.buttonA,  R.id.buttonB,  R.id.buttonC,  R.id.buttonD};
+    private ArrayList< Integer> mRemainingSampleIDs;
+    private ArrayList< Integer> mQuestionSampleIDs;
     private int mAnswerSampleID;
     private int mCurrentScore;
     private int mHighScore;
@@ -73,40 +77,39 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private SimpleExoPlayerView mPlayerView;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+
     private NotificationManager mNotificationManager;
+    private NotificationCompat.Builder mBuilder;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
-
 
         // Initialize the player view.
         mPlayerView = (SimpleExoPlayerView) findViewById(R.id.playerView);
 
-
-        boolean isNewGame = !getIntent().hasExtra(REMAINING_SONGS_KEY);
+        boolean isNewGame = !getIntent() .hasExtra( REMAINING_SONGS_KEY);
 
         // If it's a new game, set the current score to 0 and load all samples.
-        if (isNewGame) {
-            QuizUtils.setCurrentScore(this, 0);
-            mRemainingSampleIDs = Sample.getAllSampleIDs(this);
+        if( isNewGame) {
+            QuizUtils .setCurrentScore(this, 0);
+            mRemainingSampleIDs = Sample .getAllSampleIDs(this);
             // Otherwise, get the remaining songs from the Intent.
         } else {
-            mRemainingSampleIDs = getIntent().getIntegerArrayListExtra(REMAINING_SONGS_KEY);
+            mRemainingSampleIDs = getIntent() .getIntegerArrayListExtra( REMAINING_SONGS_KEY);
         }
 
         // Get current and high scores.
-        mCurrentScore = QuizUtils.getCurrentScore(this);
-        mHighScore = QuizUtils.getHighScore(this);
+        mCurrentScore = QuizUtils .getCurrentScore(this);
+        mHighScore = QuizUtils .getHighScore(this);
 
         // Generate a question and get the correct answer.
-        mQuestionSampleIDs = QuizUtils.generateQuestion(mRemainingSampleIDs);
-        mAnswerSampleID = QuizUtils.getCorrectAnswerID(mQuestionSampleIDs);
+        mQuestionSampleIDs = QuizUtils .generateQuestion( mRemainingSampleIDs);
+        mAnswerSampleID = QuizUtils .getCorrectAnswerID( mQuestionSampleIDs);
 
         // Load the question mark as the background image until the user answers the question.
-        mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource
+        mPlayerView.setDefaultArtwork( BitmapFactory.decodeResource
                 (getResources(), R.drawable.question_mark));
 
         // If there is only one answer left, end the game.
@@ -116,21 +119,20 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Initialize the buttons with the composers names.
-        mButtons = initializeButtons(mQuestionSampleIDs);
+        mButtons = initializeButtons( mQuestionSampleIDs);
 
         // Initialize the Media Session.
         initializeMediaSession();
 
-        Sample answerSample = Sample.getSampleByID(this, mAnswerSampleID);
+        Sample answerSample = Sample .getSampleByID(this, mAnswerSampleID);
 
         if (answerSample == null) {
-            Toast.makeText(this, getString(R.string.sample_not_found_error),
-                    Toast.LENGTH_SHORT).show();
+            Toast .makeText(this, getString(R.string.sample_not_found_error), Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Initialize the player.
-        initializePlayer(Uri.parse(answerSample.getUri()));
+        initializePlayer( Uri .parse( answerSample.getUri()));
     }
 
     /**
@@ -148,7 +150,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         // Do not let MediaButtons restart the player when the app is not visible.
-        mMediaSession.setMediaButtonReceiver(null);
+        mMediaSession.setMediaButtonReceiver( null);
 
         // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
         mStateBuilder = new PlaybackStateCompat.Builder()
@@ -158,14 +160,14 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                                 PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
                                 PlaybackStateCompat.ACTION_PLAY_PAUSE);
 
-        mMediaSession.setPlaybackState(mStateBuilder.build());
+        mMediaSession .setPlaybackState( mStateBuilder.build());
 
 
         // MySessionCallback has methods that handle callbacks from a media controller.
-        mMediaSession.setCallback(new MySessionCallback());
+        mMediaSession .setCallback( new MySessionCallback());
 
         // Start the Media Session since the activity is active.
-        mMediaSession.setActive(true);
+        mMediaSession .setActive( true);
 
     }
 
@@ -177,14 +179,14 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
      * @return The Array of initialized buttons.
      */
     private Button[] initializeButtons(ArrayList<Integer> answerSampleIDs) {
-        Button[] buttons = new Button[mButtonIDs.length];
+        Button[] buttons = new Button[ mButtonIDs.length];
         for (int i = 0; i < answerSampleIDs.size(); i++) {
-            Button currentButton = (Button) findViewById(mButtonIDs[i]);
-            Sample currentSample = Sample.getSampleByID(this, answerSampleIDs.get(i));
+            Button currentButton = (Button) findViewById( mButtonIDs[i]);
+            Sample currentSample = Sample .getSampleByID(this, answerSampleIDs.get(i));
             buttons[i] = currentButton;
-            currentButton.setOnClickListener(this);
-            if (currentSample != null) {
-                currentButton.setText(currentSample.getComposer());
+            currentButton.setOnClickListener( this);
+            if( currentSample != null) {
+                currentButton .setText(  currentSample .getComposer());
             }
         }
         return buttons;
@@ -196,8 +198,33 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     //  Clicking on the notification should launch this activity.
     //  It should take one argument that defines the state of MediaSession.
     private void showNotification( PlaybackStateCompat state) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder( this);
 
+        int NOTIFICATION_ID = 234;
+        /*NotificationManager */ mNotificationManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            String CHANNEL_ID = "my_channel_01";
+            CharSequence name = "my_channel";
+            String Description = "This is my channel";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription(Description);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.setShowBadge(false);
+
+            mNotificationManager.createNotificationChannel(mChannel);
+
+            mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+        } else {
+
+            mBuilder = new NotificationCompat.Builder(this);
+        }
         int icon;
         String play_pause;
         if( state.getState() == PlaybackStateCompat.STATE_PLAYING) {
@@ -224,7 +251,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                 new Intent( this, QuizActivity.class),
                 0);
 
-        builder .setContentTitle( getString( R.string.guess))
+        mBuilder .setContentTitle( getString( R.string.guess))
                 .setContentText(  getString( R.string.notification_text))
                 .setContentIntent( contentPendingIntend)
                 .setSmallIcon(R.drawable.ic_music_note)
@@ -235,9 +262,16 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
                         .setMediaSession( mMediaSession.getSessionToken())
                         .setShowActionsInCompactView(0,1));
 
+
+
         mNotificationManager = (NotificationManager) getSystemService( NOTIFICATION_SERVICE);
-        mNotificationManager .notify( 0, builder.build());
+        mNotificationManager .notify( NOTIFICATION_ID, mBuilder.build());
     }
+
+
+
+
+
 
 
 
@@ -251,7 +285,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
+            mExoPlayer = ExoPlayerFactory .newSimpleInstance(this, trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
 
             // Set the ExoPlayer.EventListener to this activity.
