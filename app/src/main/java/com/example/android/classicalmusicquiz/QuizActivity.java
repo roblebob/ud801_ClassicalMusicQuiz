@@ -19,6 +19,7 @@ package com.example.android.classicalmusicquiz;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -75,7 +76,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private Button[] mButtons;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
-    private MediaSessionCompat mMediaSession;
+    private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
     private NotificationManager mNotificationManager;
@@ -268,6 +269,15 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mNotificationManager .notify( NOTIFICATION_ID, mBuilder.build());
     }
 
+    public static class MediaReceiver extends BroadcastReceiver {
+
+        public MediaReceiver() { }
+
+        @Override public void onReceive(Context context, Intent intent) {
+            MediaButtonReceiver.handleIntent( mMediaSession, intent);
+        }
+    }
+
 
 
 
@@ -406,19 +416,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     
     // ExoPlayer Event Listeners
-
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-    }
-
+    @Override public void onTimelineChanged(Timeline timeline, Object manifest) { }
+    @Override public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) { }
+    @Override public void onLoadingChanged(boolean isLoading) { }
     /**
      * Method that is called when the ExoPlayer state changes. Used to update the MediaSession
      * PlayBackState to keep in sync.
@@ -426,8 +426,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
      * @param playbackState int describing the state of ExoPlayer. Can be STATE_READY, STATE_IDLE,
      *                      STATE_BUFFERING, or STATE_ENDED.
      */
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+    @Override public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mExoPlayer.getCurrentPosition(), 1f);
@@ -440,31 +439,20 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         // TODO [✓] (2): Call the method to show the notification, passing in the PlayBackStateCompat object.
         showNotification( mStateBuilder.build());
     }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-    }
-
-    @Override
-    public void onPositionDiscontinuity() {
-    }
+    @Override public void onPlayerError(ExoPlaybackException error) { }
+    @Override public void onPositionDiscontinuity() { }
 
     /**
      * Media Session Callbacks, where all external clients control the player.
      */
     private class MySessionCallback extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
+        @Override public void onPlay() {
             mExoPlayer.setPlayWhenReady(true);
         }
-
-        @Override
-        public void onPause() {
+        @Override public void onPause() {
             mExoPlayer.setPlayWhenReady(false);
         }
-
-        @Override
-        public void onSkipToPrevious() {
+        @Override public void onSkipToPrevious() {
             mExoPlayer.seekTo(0);
         }
     }
