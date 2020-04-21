@@ -16,8 +16,10 @@
 
 package com.example.android.classicalmusicquiz;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -195,46 +197,74 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
      * @param state The PlaybackState of the MediaSession.
      */
     private void showNotification(PlaybackStateCompat state) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
+        int NOTIFICATION_ID = 234;
+        /*NotificationManager */ mNotificationManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            String CHANNEL_ID = "my_channel_01";
+            CharSequence name = "my_channel";
+            String Description = "This is my channel";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mChannel.setDescription(Description);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.RED);
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.setShowBadge(false);
+
+            mNotificationManager.createNotificationChannel(mChannel);
+
+            mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+        } else {
+
+            mBuilder = new NotificationCompat.Builder(this);
+        }
         int icon;
         String play_pause;
-        if(state.getState() == PlaybackStateCompat.STATE_PLAYING){
+        if( state.getState() == PlaybackStateCompat.STATE_PLAYING) {
             icon = R.drawable.exo_controls_pause;
-            play_pause = getString(R.string.pause);
+            play_pause = getString( R.string.pause);
         } else {
             icon = R.drawable.exo_controls_play;
-            play_pause = getString(R.string.play);
+            play_pause = getString( R.string.play);
         }
 
-
         NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
-                icon, play_pause,
-                MediaButtonReceiver.buildMediaButtonPendingIntent(this,
-                        PlaybackStateCompat.ACTION_PLAY_PAUSE));
+                icon,
+                play_pause,
+                MediaButtonReceiver .buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_PLAY_PAUSE));
 
-        NotificationCompat.Action restartAction = new androidx.core.app.NotificationCompat
-                .Action(R.drawable.exo_controls_previous, getString(R.string.restart),
-                MediaButtonReceiver.buildMediaButtonPendingIntent
-                        (this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+        NotificationCompat.Action restartAction = new NotificationCompat.Action(
+                R.drawable.exo_controls_previous,
+                getString(R.string.restart),
+                MediaButtonReceiver .buildMediaButtonPendingIntent( this, PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
 
-        PendingIntent contentPendingIntent = PendingIntent.getActivity
-                (this, 0, new Intent(this, QuizActivity.class), 0);
+        PendingIntent contentPendingIntend = PendingIntent .getActivity(
+                this,
+                0,
+                new Intent( this, QuizActivity.class),
+                0);
 
-        builder.setContentTitle(getString(R.string.guess))
-                .setContentText(getString(R.string.notification_text))
-                .setContentIntent(contentPendingIntent)
+        mBuilder .setContentTitle( getString( R.string.guess))
+                .setContentText(  getString( R.string.notification_text))
+                .setContentIntent( contentPendingIntend)
                 .setSmallIcon(R.drawable.ic_music_note)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .addAction(restartAction)
-                .addAction(playPauseAction)
+                .setVisibility( NotificationCompat.VISIBILITY_PUBLIC)
+                .addAction( restartAction)
+                .addAction( playPauseAction)
                 .setStyle( new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(mMediaSession.getSessionToken())
+                        .setMediaSession( mMediaSession.getSessionToken())
                         .setShowActionsInCompactView(0,1));
 
 
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, builder.build());
+
+        mNotificationManager = (NotificationManager) getSystemService( NOTIFICATION_SERVICE);
+        mNotificationManager .notify( NOTIFICATION_ID, mBuilder.build());
     }
 
 
