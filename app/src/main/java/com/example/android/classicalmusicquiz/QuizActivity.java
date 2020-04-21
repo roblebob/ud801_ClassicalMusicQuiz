@@ -273,8 +273,8 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
         public MediaReceiver() { }
 
-        @Override public void onReceive(Context context, Intent intent) {
-            MediaButtonReceiver.handleIntent( mMediaSession, intent);
+        @Override public void onReceive( Context context, Intent intent) {
+            MediaButtonReceiver .handleIntent( mMediaSession, intent);
         }
     }
 
