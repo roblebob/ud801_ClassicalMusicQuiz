@@ -19,6 +19,7 @@ package com.example.android.classicalmusicquiz;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -71,7 +72,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private Button[] mButtons;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
-    private MediaSessionCompat mMediaSession;
+    private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mBuilder;
@@ -329,7 +330,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Get the ID of the sample that the user selected.
-        int userAnswerSampleID = mQuestionSampleIDs.get(userAnswerIndex);
+        int userAnswerSampleID = mQuestionSampleIDs .get( userAnswerIndex);
 
         // If the user is correct, increase there score and update high score.
         if (QuizUtils.userCorrect(mAnswerSampleID, userAnswerSampleID)) {
@@ -342,19 +343,16 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         // Remove the answer sample from the list of all samples, so it doesn't get asked again.
-        mRemainingSampleIDs.remove(Integer.valueOf(mAnswerSampleID));
+        mRemainingSampleIDs .remove( Integer.valueOf( mAnswerSampleID));
 
         // Wait some time so the user can see the correct answer, then go to the next question.
         final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mExoPlayer.stop();
-                Intent nextQuestionIntent = new Intent(QuizActivity.this, QuizActivity.class);
-                nextQuestionIntent.putExtra(REMAINING_SONGS_KEY, mRemainingSampleIDs);
-                finish();
-                startActivity(nextQuestionIntent);
-            }
+        handler.postDelayed(() -> {
+            mExoPlayer.stop();
+            Intent nextQuestionIntent = new Intent(QuizActivity.this, QuizActivity.class);
+            nextQuestionIntent.putExtra(REMAINING_SONGS_KEY, mRemainingSampleIDs);
+            finish();
+            startActivity(nextQuestionIntent);
         }, CORRECT_ANSWER_DELAY_MILLIS);
     }
 
@@ -370,14 +368,18 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
             mButtons[i].setEnabled(false);
 
             if (buttonSampleID == mAnswerSampleID) {
-                mButtons[i].getBackground().setColorFilter(ContextCompat.getColor
-                                (this, android.R.color.holo_green_light),
-                        PorterDuff.Mode.MULTIPLY);
-                mButtons[i].setTextColor(Color.WHITE);
+                mButtons[i] .getBackground()
+                        .setColorFilter(
+                                ContextCompat .getColor(this, android.R.color.holo_green_light),
+                                PorterDuff.Mode.MULTIPLY
+                        );
+                mButtons[i] .setTextColor( Color.WHITE);
             } else {
-                mButtons[i].getBackground().setColorFilter(ContextCompat.getColor
-                                (this, android.R.color.holo_red_light),
-                        PorterDuff.Mode.MULTIPLY);
+                mButtons[i] .getBackground()
+                        .setColorFilter(
+                                ContextCompat .getColor(this, android.R.color.holo_red_light),
+                                PorterDuff.Mode.MULTIPLY
+                        );
                 mButtons[i].setTextColor(Color.WHITE);
             }
         }
@@ -387,8 +389,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Release the player when the activity is destroyed.
      */
-    @Override
-    protected void onDestroy() {
+    @Override protected void onDestroy() {
         super.onDestroy();
         releasePlayer();
         mMediaSession.setActive(false);
@@ -396,19 +397,9 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
 
     
     // ExoPlayer Event Listeners
-
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
-    }
-
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-    }
-
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
-    }
-
+    @Override public void onTimelineChanged(Timeline timeline, Object manifest) { }
+    @Override public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) { }
+    @Override public void onLoadingChanged(boolean isLoading) { }
     /**
      * Method that is called when the ExoPlayer state changes. Used to update the MediaSession
      * PlayBackState to keep in sync, and post the media notification.
@@ -416,8 +407,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
      * @param playbackState int describing the state of ExoPlayer. Can be STATE_READY, STATE_IDLE,
      *                      STATE_BUFFERING, or STATE_ENDED.
      */
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+    @Override public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
         if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
             mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
                     mExoPlayer.getCurrentPosition(), 1f);
@@ -428,35 +418,29 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
         mMediaSession.setPlaybackState(mStateBuilder.build());
         showNotification(mStateBuilder.build());
     }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-    }
-
-    @Override
-    public void onPositionDiscontinuity() {
-    }
+    @Override public void onPlayerError(ExoPlaybackException error) { }
+    @Override public void onPositionDiscontinuity() { }
 
     /**
      * Media Session Callbacks, where all external clients control the player.
      */
     private class MySessionCallback extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
+        @Override public void onPlay() {
             mExoPlayer.setPlayWhenReady(true);
         }
-
-        @Override
-        public void onPause() {
+        @Override public void onPause() {
             mExoPlayer.setPlayWhenReady(false);
         }
-
-        @Override
-        public void onSkipToPrevious() {
+        @Override public void onSkipToPrevious() {
             mExoPlayer.seekTo(0);
         }
     }
 
-    // TODO (1): Create a static inner class that extends Broadcast Receiver and implement the onReceive() method.
-    //TODO (2): Call MediaButtonReceiver.handleIntent and pass in the incoming intent as well as the MediaSession object to forward the intent to the MediaSession.Callbacks.
+    public static class MediaReceiver extends BroadcastReceiver {
+        public MediaReceiver() { }
+
+        @Override public void onReceive(Context context, Intent intent) {
+            MediaButtonReceiver.handleIntent( mMediaSession, intent);
+        }
+    }
 }
