@@ -74,7 +74,7 @@ public class QuizActivity extends AppCompatActivity implements View.OnClickListe
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private NotificationManager mNotificationManager;
-
+    private NotificationCompat.Builder mBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
